@@ -19,8 +19,8 @@ define('KATHAROS_OBFUSCATE_WORDPRESS_URLS', true);
 define('KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS', true);
 define('KATHAROS_REMOVE_SCHEME_FROM_URLS', true);
 define('KATHAROS_REMOVE_SERVER_NAME_FROM_URLS', true);
-define('KATHAROS_STRING_REPLACEMENTS_FROM', "WordPress|StudioPress|BuddyPress|CustomPress|MarketPress|bbPress|WooThemes|WooCommerce|eNews|LayerSlider|MailPoet|NextGEN|Howdy|E-commerce|e-commerce|eCommerce|Email|email|eBay|PayPal|cPanel|eWAY|EasyCart");
-define('KATHAROS_STRING_REPLACEMENTS_TO', "Wordpress|Studiopress|Buddypress|Custompress|Marketpress|Bbpress|Woothemes|Woocommerce|Enews|Layerslider|Mailpoet|Nextgen|G'day|Ecommerce|ecommerce|Ecommerce|Email|email|Ebay|Paypal|Cpanel|Eway|Easycart");
+define('KATHAROS_STRING_REPLACEMENTS_FROM', "WordPress|StudioPress|BuddyPress|CustomPress|MarketPress|bbPress|WooCommerce|WooThemes|eNews|LayerSlider|MailPoet|NextGEN|Howdy|E-commerce|e-commerce|eCommerce|Email|email|eBay|PayPal|cPanel|eWAY|EasyCart");
+define('KATHAROS_STRING_REPLACEMENTS_TO', "Wordpress|Studiopress|Buddypress|Custompress|Marketpress|Bbpress|Woocommerce|Woothemes|Enews|Layerslider|Mailpoet|Nextgen|G'day|Ecommerce|ecommerce|Ecommerce|Email|email|Ebay|Paypal|Cpanel|Eway|Easycart");
 
 //
 // Don't touch these or the sky will fall.
