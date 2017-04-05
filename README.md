@@ -15,34 +15,19 @@ This project is licensed under the [GNU GPL](http://www.gnu.org/licenses/old-lic
 This plugin provides an API to to customise the default constant values. See these examples:
 
 	// ---- Change the Katharos plugin compress output buffering value to false.
-	add_filter('katharos_compress_output_buffer_filter', 'custom_katharos_compress_output_buffer_filter');
-	function custom_katharos_compress_output_buffer_filter($value) {
-		return false;
-	}
+	add_filter('katharos_compress_output_buffer_filter', '__return_false');
 
 	// ---- Change the Katharos plugin obfuscate Wordpress URLs value to false.
-	add_filter('katharos_obfuscate_wordpress_urls_filter', 'custom_katharos_obfuscate_wordpress_urls_filter');
-	function custom_katharos_obfuscate_wordpress_urls_filter($value) {
-		return false;
-	}
+	add_filter('katharos_obfuscate_wordpress_urls_filter', '__return_false');
 
 	// ---- Change the Katharos plugin remove WWW from URLs value to false.
-	add_filter('katharos_remove_dubya_dubya_dubya_from_urls_filter', 'custom_katharos_remove_dubya_dubya_dubya_from_urls_filter');
-	function custom_katharos_remove_dubya_dubya_dubya_from_urls_filter($value) {
-		return false;
-	}
+	add_filter('katharos_remove_dubya_dubya_dubya_from_urls_filter', '__return_false');
 
 	// ---- Change the Katharos plugin remove HTTP scheme value to false.
-	add_filter('katharos_remove_scheme_from_urls_filter', 'custom_katharos_remove_scheme_from_urls_filter');
-	function custom_katharos_remove_scheme_from_urls_filter($value) {
-		return false;
-	}
+	add_filter('katharos_remove_scheme_from_urls_filter', '__return_false');
 
 	// ---- Change the Katharos plugin remove server name value to false.
-	add_filter('katharos_remove_server_name_from_urls_filter', 'custom_katharos_remove_server_name_from_urls_filter');
-	function custom_katharos_remove_server_name_from_urls_filter($value) {
-		return false;
-	}
+	add_filter('katharos_remove_server_name_from_urls_filter', '__return_false');
 
 	// ---- Change the Katharos plugin replacement strings from value.
 	add_filter('katharos_string_replacements_from_filter', 'custom_katharos_string_replacements_from_filter');
@@ -64,30 +49,15 @@ Or if you're using a custom site plugin (you should be), do it via the `plugins_
 	add_action('plugins_loaded', 'custom_katharos_filters');
 	function custom_katharos_filters() {
 		// Change the compress output buffering value to false.
-		add_filter('katharos_compress_output_buffer_filter', 'custom_katharos_compress_output_buffer_filter');
-		function custom_katharos_compress_output_buffer_filter($value) {
-			return false;
-		}
+		add_filter('katharos_compress_output_buffer_filter', '__return_false');
 		// Change the obfuscate Wordpress URLs value to false.
-		add_filter('katharos_obfuscate_wordpress_urls_filter', 'custom_katharos_obfuscate_wordpress_urls_filter');
-		function custom_katharos_obfuscate_wordpress_urls_filter($value) {
-			return false;
-		}
+		add_filter('katharos_obfuscate_wordpress_urls_filter', '__return_false');
 		// Change the remove WWW from URLs value to false.
-		add_filter('katharos_remove_dubya_dubya_dubya_from_urls_filter', 'custom_katharos_remove_dubya_dubya_dubya_from_urls_filter');
-		function custom_katharos_remove_dubya_dubya_dubya_from_urls_filter($value) {
-			return false;
-		}
+		add_filter('katharos_remove_dubya_dubya_dubya_from_urls_filter', '__return_false');
 		// Change the remove HTTP scheme value to false.
-		add_filter('katharos_remove_scheme_from_urls_filter', 'custom_katharos_remove_scheme_from_urls_filter');
-		function custom_katharos_remove_scheme_from_urls_filter($value) {
-			return false;
-		}
+		add_filter('katharos_remove_scheme_from_urls_filter', '__return_false');
 		// Change the remove server name value to false.
-		add_filter('katharos_remove_server_name_from_urls_filter', 'custom_katharos_remove_server_name_from_urls_filter');
-		function custom_katharos_remove_server_name_from_urls_filter($value) {
-			return false;
-		}
+		add_filter('katharos_remove_server_name_from_urls_filter', '__return_false');
 		// Change the replacement strings from value.
 		add_filter('katharos_string_replacements_from_filter', 'custom_katharos_string_replacements_from_filter');
 		function custom_katharos_string_replacements_from_filter($value) {
