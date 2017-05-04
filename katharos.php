@@ -31,16 +31,6 @@ define('KATHAROS_IS_MULTISITE', is_multisite());
 //  Output buffering functions.
 //
 function katharos_buffer_callback($html) {
-	$from = apply_filters('katharos_string_replacements_from_filter', KATHAROS_STRING_REPLACEMENTS_FROM);
-	$to = apply_filters('katharos_string_replacements_to_filter', KATHAROS_STRING_REPLACEMENTS_TO);
-	if (strlen($from) > 0 && strlen($to) > 0) {
-		$regex = explode('|', $from);
-		for ($i = 0, $c = count($regex); $i < $c; $i++) {
-			$regex[$i] = '#\b' . $regex[$i] . '\b#';
-		}
-		$html = preg_replace($regex, explode('|', $to), $html);
-		$html = str_replace(':</label>', '</label>', $html);
-	}
 	if (is_admin() == false) {
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
 			$temp = array();
@@ -88,6 +78,31 @@ function katharos_buffer_callback($html) {
 			}
 			$html = preg_replace('#<!--(.*)-->#Uis', null, $html);
 		}
+	}
+	if (is_admin() == true) {
+		// Woocommerce hack to show correct page titles for reports, settings, status and addons pages.
+		if (strpos($html, '<div class="wrap woocommerce">') > 0) {
+			$title = ucwords(get_admin_page_title());
+			if (substr(strtoupper($title), 0, 11) <> 'WOOCOMMERCE') {
+				$title = sprintf('%s %s', __('Woocommerce'), $title);
+			}
+			$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
+			if (isset($_GET['page']) == true) {
+				if ($_GET['page'] == 'wc-reports') {
+					$html = str_replace('<title>Reports', '<title>Woocommerce reports ', $html);
+				}
+			}
+		}
+	}
+	$from = apply_filters('katharos_string_replacements_from_filter', KATHAROS_STRING_REPLACEMENTS_FROM);
+	$to = apply_filters('katharos_string_replacements_to_filter', KATHAROS_STRING_REPLACEMENTS_TO);
+	if (strlen($from) > 0 && strlen($to) > 0) {
+		$regex = explode('|', $from);
+		for ($i = 0, $c = count($regex); $i < $c; $i++) {
+			$regex[$i] = '#\b' . $regex[$i] . '\b#';
+		}
+		$html = preg_replace($regex, explode('|', $to), $html);
+		$html = str_replace(':</label>', '</label>', $html);
 	}
 	return trim($html);
 }
