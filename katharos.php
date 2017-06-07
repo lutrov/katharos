@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 3.0
+Version: 3.1
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -19,8 +19,8 @@ define('KATHAROS_OBFUSCATE_WORDPRESS_URLS', true);
 define('KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS', true);
 define('KATHAROS_REMOVE_SCHEME_FROM_URLS', true);
 define('KATHAROS_REMOVE_SERVER_NAME_FROM_URLS', true);
-define('KATHAROS_STRING_REPLACEMENTS_FROM', "AdWords|bbPress|BuddyPress|cPanel|CustomPress|E-commerce|e-commerce|E-mail|e-mail|EasyCart|eBay|eCommerce|eNews|eWAY|Howdy|LayerSlider|MailPoet|MarketPress|NextGEN|PayPal|StudioPress|WooCommerce|WooSwipe|WooThemes|WordPress");
-define('KATHAROS_STRING_REPLACEMENTS_TO', "Adwords|Bbpress|Buddypress|Cpanel|Custompress|Ecommerce|ecommerce|Email|email|Easycart|Ebay|Ecommerce|Enews|Eway|G'day|Layerslider|Mailpoet|Marketpress|Nextgen|Paypal|Studiopress|Woocommerce|Wooswipe|Woothemes|Wordpress");
+define('KATHAROS_STRING_REPLACEMENTS_FROM', "AdWords|bbPress|BuddyPress|cPanel|CustomPress|eChecks|E-commerce|e-commerce|E-mail|e-mail|EasyCart|eBay|eCommerce|eNews|eWAY|Howdy|LayerSlider|LearnPress|MailChimp|MailPoet|MarketPress|NextGEN|PayPal|StudioPress|WooCommerce|WooSwipe|WooThemes|WordPress");
+define('KATHAROS_STRING_REPLACEMENTS_TO', "Adwords|Bbpress|Buddypress|Cpanel|Custompress|Echecks|Ecommerce|ecommerce|Email|email|Easycart|Ebay|Ecommerce|Enews|Eway|G'day|Layerslider|Learnpress|Mailchimp|Mailpoet|Marketpress|Nextgen|Paypal|Studiopress|Woocommerce|Wooswipe|Woothemes|Wordpress");
 
 //
 // Don't touch these or the sky will fall.
