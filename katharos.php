@@ -33,6 +33,10 @@ define('KATHAROS_IS_MULTISITE', is_multisite());
 function katharos_buffer_callback($html) {
 	if (is_admin() == false) {
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
+			// Remove closing slashes for HTML5 documents.
+			if (stripos($html, '<!DOCTYPE html>') !== false) {
+				$html = str_replace(array('" />', '"/>', "' />", "'/>"), array('">', '">', "'>", "'>"), $html);
+			}
 			$temp = array();
 			// Handle IE conditional script loading syntax.
 			if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
