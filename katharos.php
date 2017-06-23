@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 3.2
+Version: 3.3
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -41,49 +41,32 @@ function katharos_buffer_callback($html) {
 			// Handle IE conditional script loading syntax.
 			if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
-					$code = $matches[0][$i];
-					$hash = hash('md5', $code);
-					$temp[$hash] = trim(preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis'), array( null), $code));
+					$code = katharos_replace_config_strings($matches[0][$i]);
+					$hash = hash('sha256', $code);
+					$temp[$hash] = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis'), array( null), $code);
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
 			// Don't compress preformatted text.
 			if (preg_match_all('#<pre(.*)>(.*)</pre>#is', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
-					$code = $matches[0][$i];
-					$hash = hash('md5', $code);
-					$temp[$hash] = trim($code);
+					$code = trim($matches[0][$i]);
+					$hash = hash('sha256', $code);
+					$temp[$hash] = $code;
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
 			// Don't compress textarea content.
 			if (preg_match_all('#<textarea(.*)>(.*)</textarea>#is', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
-					$code = $matches[0][$i];
-					$hash = hash('md5', $code);
-					$temp[$hash] = trim($code);
+					$code = trim($matches[0][$i]);
+					$hash = hash('sha256', $code);
+					$temp[$hash] = $code;
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
 		}
-		if (apply_filters('katharos_obfuscate_wordpress_urls_filter', KATHAROS_OBFUSCATE_WORDPRESS_URLS) == true) {
-			if (KATHAROS_IS_MULTISITE == false) {
-				$html = str_replace(array('/wp-includes/', '/wp-content/plugins/', '/wp-content/themes/', '/wp-content/uploads/'), array('/lib/', '/assets/plugins/', '/assets/themes/', '/assets/uploads/'), $html);
-			}
-		}
-		if (apply_filters('katharos_remove_server_name_from_urls_filter', KATHAROS_REMOVE_SERVER_NAME_FROM_URLS) == true) {
-			$scheme = 'http';
-			if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-				$scheme = 'https';
-			}
-			$html = str_replace($scheme . '://' . $_SERVER['SERVER_NAME'], null, $html);
-		}
-		if (apply_filters('katharos_remove_scheme_from_urls_filter', KATHAROS_REMOVE_SCHEME_FROM_URLS) == true) {
-			$html = preg_replace('#https?://#', '//', $html);
-		}
-		if (apply_filters('katharos_remove_dubya_dubya_dubya_from_urls_filter', KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS) == true) {
-			$html = str_replace('//www.', '//', $html);
-		}
+		$html = katharos_replace_config_strings($html);
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
 			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--TAB-->', '<!--CR-->', '<!--LF-->', null), $html);
 			$html = preg_replace('#<!--(.*)-->#Uis', null, $html);
@@ -95,19 +78,7 @@ function katharos_buffer_callback($html) {
 		}
 	}
 	if (is_admin() == true) {
-		// Woocommerce hack to show correct page titles for reports, settings, status and addons pages.
-		if (strpos($html, '<div class="wrap woocommerce">') > 0) {
-			$title = ucwords(get_admin_page_title());
-			if (substr(strtoupper($title), 0, 11) <> 'WOOCOMMERCE') {
-				$title = sprintf('%s %s', __('Woocommerce'), $title);
-			}
-			$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
-			if (isset($_GET['page']) == true) {
-				if ($_GET['page'] == 'wc-reports') {
-					$html = str_replace('<title>Reports', '<title>Woocommerce Reports ', $html);
-				}
-			}
-		}
+		$html = katharos_woocommerce_headers($html);
 	}
 	$from = apply_filters('katharos_string_replacements_from_filter', KATHAROS_STRING_REPLACEMENTS_FROM);
 	$to = apply_filters('katharos_string_replacements_to_filter', KATHAROS_STRING_REPLACEMENTS_TO);
@@ -118,6 +89,50 @@ function katharos_buffer_callback($html) {
 		}
 		$html = preg_replace($regex, explode('|', $to), $html);
 		$html = str_replace(':</label>', '</label>', $html);
+	}
+	return trim($html);
+}
+
+//
+// Replace strings based on configuration settings.
+//
+function katharos_replace_config_strings($html) {
+	if (apply_filters('katharos_obfuscate_wordpress_urls_filter', KATHAROS_OBFUSCATE_WORDPRESS_URLS) == true) {
+		if (KATHAROS_IS_MULTISITE == false) {
+			$html = str_replace(array('/wp-includes/', '/wp-content/plugins/', '/wp-content/themes/', '/wp-content/uploads/'), array('/lib/', '/assets/plugins/', '/assets/themes/', '/assets/uploads/'), $html);
+		}
+	}
+	if (apply_filters('katharos_remove_server_name_from_urls_filter', KATHAROS_REMOVE_SERVER_NAME_FROM_URLS) == true) {
+		$scheme = 'http';
+		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			$scheme = 'https';
+		}
+		$html = str_replace($scheme . '://' . $_SERVER['SERVER_NAME'], null, $html);
+	}
+	if (apply_filters('katharos_remove_scheme_from_urls_filter', KATHAROS_REMOVE_SCHEME_FROM_URLS) == true) {
+		$html = preg_replace('#https?://#', '//', $html);
+	}
+	if (apply_filters('katharos_remove_dubya_dubya_dubya_from_urls_filter', KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS) == true) {
+		$html = str_replace('//www.', '//', $html);
+	}
+	return trim($html);
+}
+
+//
+// Woocommerce hack to show correct page titles for reports, settings, status and addons pages.
+//
+function katharos_woocommerce_headers($html) {
+	if (strpos($html, '<div class="wrap woocommerce">') > 0) {
+		$title = ucwords(get_admin_page_title());
+		if (substr(strtoupper($title), 0, 11) <> 'WOOCOMMERCE') {
+			$title = sprintf('%s %s', __('Woocommerce'), $title);
+		}
+		$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
+		if (isset($_GET['page']) == true) {
+			if ($_GET['page'] == 'wc-reports') {
+				$html = str_replace('<title>Reports', '<title>Woocommerce Reports ', $html);
+			}
+		}
 	}
 	return trim($html);
 }
@@ -143,7 +158,7 @@ function katharos_buffer_stop() {
 //
 if (preg_match('#/sitemap\.xml$#', $_SERVER['REQUEST_URI']) == 0) {
 	add_action('init', 'katharos_buffer_start', 0);
-	add_action('shutdown', 'katharos_buffer_stop', 999);
+	add_action('shutdown', 'katharos_buffer_stop', 8888);
 }
 
 //
