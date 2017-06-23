@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 3.1
+Version: 3.2
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -34,6 +34,16 @@ function katharos_buffer_callback($html) {
 	if (is_admin() == false) {
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
 			$temp = array();
+			// Handle IE conditional script loading syntax.
+			if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
+				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
+					$code = $matches[0][$i];
+					$hash = hash('md5', $code);
+					$temp[$hash] = trim(preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis'), array( null), $code));
+					$html = str_replace($code, '[[' . $hash . ']]', $html);
+				}
+			}
+			// Don't compress preformatted text.
 			if (preg_match_all('#<pre(.*)>(.*)</pre>#is', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
 					$code = $matches[0][$i];
@@ -42,6 +52,7 @@ function katharos_buffer_callback($html) {
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
+			// Don't compress textarea content.
 			if (preg_match_all('#<textarea(.*)>(.*)</textarea>#is', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
 					$code = $matches[0][$i];
@@ -70,13 +81,13 @@ function katharos_buffer_callback($html) {
 			$html = str_replace('//www.', '//', $html);
 		}
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
-			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.*)[\s]+-->#Uis'), array('<!--TAB-->', '<!--CR-->', '<!--LF-->', null), $html);
+			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--TAB-->', '<!--CR-->', '<!--LF-->', null), $html);
+			$html = preg_replace('#<!--(.*)-->#Uis', null, $html);
 			if (count($temp) > 0) {
 				foreach ($temp as $hash => $code) {
 					$html = str_replace('[[' . $hash . ']]', $code, $html);
 				}
 			}
-			$html = preg_replace('#<!--(.*)-->#Uis', null, $html);
 		}
 	}
 	if (is_admin() == true) {
@@ -89,7 +100,7 @@ function katharos_buffer_callback($html) {
 			$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
 			if (isset($_GET['page']) == true) {
 				if ($_GET['page'] == 'wc-reports') {
-					$html = str_replace('<title>Reports', '<title>Woocommerce reports ', $html);
+					$html = str_replace('<title>Reports', '<title>Woocommerce Reports ', $html);
 				}
 			}
 		}
