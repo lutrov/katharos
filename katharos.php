@@ -39,7 +39,8 @@ function katharos_buffer_callback($html) {
 			}
 			$temp = array();
 			// Handle IE conditional script loading syntax.
-			if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
+			// if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
+			if (preg_match_all('#<!--\[if(.+)endif\]-->#Uis', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
 					$code = katharos_replace_config_strings($matches[0][$i]);
 					$hash = hash('sha256', $code);
@@ -68,8 +69,8 @@ function katharos_buffer_callback($html) {
 		}
 		$html = katharos_replace_config_strings($html);
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
-			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--TAB-->', '<!--CR-->', '<!--LF-->', null), $html);
-			$html = preg_replace('#<!--(.*)-->#Uis', null, $html);
+			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--X09-->', '<!--X0D-->', '<!--X0A-->', null), $html);
+			$html = preg_replace('#<!--(X09|X0D|X0A)-->#Uis', null, $html);
 			if (count($temp) > 0) {
 				foreach ($temp as $hash => $code) {
 					$html = str_replace('[[' . $hash . ']]', $code, $html);
