@@ -69,8 +69,8 @@ function katharos_buffer_callback($html) {
 		}
 		$html = katharos_replace_config_strings($html);
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
-			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--X09-->', '<!--X0D-->', '<!--X0A-->', null), $html);
-			$html = preg_replace('#<!--(X09|X0D|X0A)-->#Uis', null, $html);
+			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--TB-->', '<!--CR-->', '<!--LF-->', null), $html);
+			$html = preg_replace('#<!--(TB|CR|LF)-->#Uis', null, $html);
 			if (count($temp) > 0) {
 				foreach ($temp as $hash => $code) {
 					$html = str_replace('[[' . $hash . ']]', $code, $html);
