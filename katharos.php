@@ -44,7 +44,7 @@ function katharos_buffer_callback($html) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
 					$code = katharos_replace_config_strings($matches[0][$i]);
 					$hash = hash('sha256', $code);
-					$temp[$hash] = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis'), array( null), $code);
+					$temp[$hash] = preg_replace(array('#[\x09]#U', '#[\x0D]#U', '#[\x0A]#U'), array( null), $code);
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
