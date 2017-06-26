@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 3.3
+Version: 3.4
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -33,11 +33,11 @@ define('KATHAROS_IS_MULTISITE', is_multisite());
 function katharos_buffer_callback($html) {
 	if (is_admin() == false) {
 		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
+			$temp = array();
 			// Remove closing slashes for HTML5 documents.
 			if (stripos($html, '<!DOCTYPE html>') !== false) {
 				$html = str_replace(array('" />', '"/>', "' />", "'/>"), array('">', '">', "'>", "'>"), $html);
 			}
-			$temp = array();
 			// Handle IE conditional script loading syntax.
 			// if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
 			if (preg_match_all('#<!--\[if(.+)endif\]-->#Uis', $html, $matches) > 0) {
@@ -66,17 +66,15 @@ function katharos_buffer_callback($html) {
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
-		}
-		$html = katharos_replace_config_strings($html);
-		if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
-			$html = preg_replace(array('#[\x09]#Uis', '#[\x0D]#Uis', '#[\x0A]#Uis', '#<!--[\s]+(.+)[\s]+-->#Uis'), array('<!--TB-->', '<!--CR-->', '<!--LF-->', null), $html);
-			$html = preg_replace('#<!--(TB|CR|LF)-->#Uis', null, $html);
+			$html = preg_replace(array('#\{[\s]+#', '#[\s]+\}#', '#[\s]+<#', '#>[\s]+#', '#[\s]+#', '#[\x09]#U', '#[\x0D]#U', '#[\x0A]#U', '#<!--[\s]+(.+)[\s]+-->#Us'), array('{', '}', '<', '> ', ' ', '<!--TB-->', '<!--CR-->', '<!--LF-->', null), $html);
+			$html = preg_replace('#<!--(TB|CR|LF)-->#U', null, $html);
 			if (count($temp) > 0) {
 				foreach ($temp as $hash => $code) {
 					$html = str_replace('[[' . $hash . ']]', $code, $html);
 				}
 			}
 		}
+		$html = katharos_replace_config_strings($html);
 	}
 	if (is_admin() == true) {
 		$html = katharos_woocommerce_headers($html);
