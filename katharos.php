@@ -103,7 +103,7 @@ function katharos_buffer_callback($html) {
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
-			$html = preg_replace(array('#\{[\s]+#', '#[\s]+\}#', '#[\s]+<#', '#>[\s]+#', '#[\s]+#', '#[\x09]#U', '#[\x0D]#U', '#[\x0A]#U', '#<!--[\s]+(.+)[\s]+-->#Us'), array('{', '}', '<', '> ', ' ', '<!--TB-->', '<!--CR-->', '<!--LF-->', null), $html);
+			$html = preg_replace(array('#\{[\s]+#', '#[\s]+\}#', '#[\s]+<#', '#>[\s]+#', '#[\s]+#', '#[\x09]#U', '#[\x0D]#U', '#[\x0A]#U', '#<!--[\s]+(.+)[\s]+-->#Us'), array('{', '}', ' <', '> ', ' ', '<!--TB-->', '<!--CR-->', '<!--LF-->', null), $html);
 			$html = preg_replace('#<!--(TB|CR|LF)-->#U', null, $html);
 			if (count($temp) > 0) {
 				foreach ($temp as $hash => $code) {
