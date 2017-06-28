@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 3.4
+Version: 4.0
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -19,13 +19,50 @@ define('KATHAROS_OBFUSCATE_WORDPRESS_URLS', true);
 define('KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS', true);
 define('KATHAROS_REMOVE_SCHEME_FROM_URLS', true);
 define('KATHAROS_REMOVE_SERVER_NAME_FROM_URLS', true);
-define('KATHAROS_STRING_REPLACEMENTS_FROM', "AdWords|bbPress|BuddyPress|cPanel|CustomPress|eChecks|E-commerce|e-commerce|E-mail|e-mail|EasyCart|eBay|eCommerce|eNews|eWAY|Howdy|LayerSlider|LearnPress|MailChimp|MailPoet|MarketPress|NextGEN|PayPal|StudioPress|WooCommerce|WooSwipe|WooThemes|WordPress");
-define('KATHAROS_STRING_REPLACEMENTS_TO', "Adwords|Bbpress|Buddypress|Cpanel|Custompress|Echecks|Ecommerce|ecommerce|Email|email|Easycart|Ebay|Ecommerce|Enews|Eway|G'day|Layerslider|Learnpress|Mailchimp|Mailpoet|Marketpress|Nextgen|Paypal|Studiopress|Woocommerce|Wooswipe|Woothemes|Wordpress");
 
 //
 // Don't touch these or the sky will fall.
 //
 define('KATHAROS_IS_MULTISITE', is_multisite());
+
+//
+// Replacement strings.
+//
+function katharos_replacement_strings() {
+	$strings = array(
+		"WordPress" => "Wordpress",
+		"WooThemes" => "Woothemes",
+		"WooSwipe" => "Wooswipe",
+		"WooCommerce" => "Woocommerce",
+		"StudioPress" => "Studiopress",
+		"PayPal" => "Paypal",
+		"NextGEN" => "Nextgen",
+		"Material WP" => "Material",
+		"MarketPress" => "Marketpress",
+		"MailPoet" => "Mailpoet",
+		"MailChimp" => "Mailchimp",
+		"LearnPress" => "Learnpress",
+		"LayerSlider" => "Layerslider",
+		"Howdy" => "G'day",
+		"GeneratePress" => "Generatepress",
+		"eWAY" => "Eway",
+		"eNews" => "Enews",
+		"eCommerce" => "Ecommerce",
+		"eChecks" => "Echecks",
+		"eBay" => "Ebay",
+		"EasyCart" => "Easycart",
+		"E-mail" => "Email",
+		"e-mail" => "email",
+		"E-commerce" => "Ecommerce",
+		"e-commerce" => "ecommerce",
+		"CustomPress" => "Custompress",
+		"cPanel" => "Cpanel",
+		"BuddyPress" => "Buddypress",
+		"bbPress" => "Bbpress",
+		"AdWords" => "Adwords"
+	);
+	return $strings;
+}
 
 //
 //  Output buffering functions.
@@ -79,14 +116,16 @@ function katharos_buffer_callback($html) {
 	if (is_admin() == true) {
 		$html = katharos_woocommerce_headers($html);
 	}
-	$from = apply_filters('katharos_string_replacements_from_filter', KATHAROS_STRING_REPLACEMENTS_FROM);
-	$to = apply_filters('katharos_string_replacements_to_filter', KATHAROS_STRING_REPLACEMENTS_TO);
-	if (strlen($from) > 0 && strlen($to) > 0) {
-		$regex = explode('|', $from);
-		for ($i = 0, $c = count($regex); $i < $c; $i++) {
-			$regex[$i] = '#\b' . $regex[$i] . '\b#';
+	$strings = apply_filters('katharos_replacement_strings_filter', katharos_replacement_strings());
+	if (count($strings) > 0) {
+		$temp = array();
+		$i = 0;
+		foreach ($strings as $key => $value) {
+			$temp['from'][$i] = sprintf('#\b%s\b#', $key);
+			$temp['to'][$i] = $value;
+			$i++;
 		}
-		$html = preg_replace($regex, explode('|', $to), $html);
+		$html = preg_replace($temp['from'], $temp['to'], $html);
 		$html = str_replace(':</label>', '</label>', $html);
 	}
 	return trim($html);
