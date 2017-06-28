@@ -32,7 +32,12 @@ This plugin provides an API to to customise the default values. See these exampl
 	// ---- Change the Katharos plugin replacement strings.
 	add_filter('katharos_replacement_strings_filter', 'custom_katharos_replacement_strings_filter');
 	function katharos_replacement_strings_filter($array) {
-		return array('WooCommerce' => 'Woocommerce', 'WordPress' => 'Wordpress', 'Howdy' => 'Hello', 'AdWords' => 'Adwords');
+		return array(
+			'WooCommerce' => 'Woocommerce',
+			'WordPress' => 'Wordpress',
+			'Howdy' => 'Hello',
+			'AdWords' => 'Adwords'
+		);
 	}
 
 For the two string replacement filters above, remember to escape "\", "^", ".", "$", "|", "(", ")", "[", "]", "*", "+", "?", "{", "}" and "," if you're matching any of those characters.
@@ -55,7 +60,12 @@ Or if you're using a custom site plugin (you should be), do it via the `plugins_
 		// Change the replacement strings.
 		add_filter('katharos_replacement_strings_filter', 'custom_katharos_replacement_strings_filter');
 		function katharos_replacement_strings_filter($array) {
-			return array('WooCommerce' => 'Woocommerce', 'WordPress' => 'Wordpress', 'Howdy' => 'Hello', 'AdWords' => 'Adwords');
+			return array(
+				'WooCommerce' => 'Woocommerce',
+				'WordPress' => 'Wordpress',
+				'Howdy' => 'Hello',
+				'AdWords' => 'Adwords'
+			);
 		}
 	}
 
