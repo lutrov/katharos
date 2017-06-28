@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 4.0
+Version: 4.1
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -126,7 +126,7 @@ function katharos_buffer_callback($html) {
 			$i++;
 		}
 		$html = preg_replace($temp['from'], $temp['to'], $html);
-		$html = str_replace(':</label>', '</label>', $html);
+		$html = str_replace(array(':</label>', ':</th>'), array('</label>', '</th>'), $html);
 	}
 	return trim($html);
 }
