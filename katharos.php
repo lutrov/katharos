@@ -76,7 +76,6 @@ function katharos_buffer_callback($html) {
 				$html = str_replace(array('" />', '"/>', "' />", "'/>"), array('">', '">', "'>", "'>"), $html);
 			}
 			// Handle IE conditional script loading syntax.
-			// if (preg_match_all('#<!--\[if(.+)\]>(.+)<!\[endif\]-->#Uis', $html, $matches) > 0) {
 			if (preg_match_all('#<!--\[if(.+)endif\]-->#Uis', $html, $matches) > 0) {
 				for ($i = 0, $c = count($matches[0]); $i < $c; $i++) {
 					$code = katharos_replace_config_strings($matches[0][$i]);
@@ -165,7 +164,9 @@ function katharos_woocommerce_headers($html) {
 		if (substr(strtoupper($title), 0, 11) <> 'WOOCOMMERCE') {
 			$title = sprintf('%s %s', __('Woocommerce'), $title);
 		}
-		$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
+		if (preg_match('#<div class="wrap woocommerce">(.*)<h1>#Uis', $html, $matches) == 0) {
+			$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
+		}
 		if (isset($_GET['page']) == true) {
 			if ($_GET['page'] == 'wc-reports') {
 				$html = str_replace('<title>Reports', '<title>Woocommerce Reports ', $html);
