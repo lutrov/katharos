@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 4.1
+Version: 4.3
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -31,13 +31,14 @@ define('KATHAROS_IS_MULTISITE', is_multisite());
 function katharos_replacement_strings() {
 	$strings = array(
 		"WordPress" => "Wordpress",
+		"WordCamp" => "Wordcamp",
 		"WooThemes" => "Woothemes",
 		"WooSwipe" => "Wooswipe",
 		"WooCommerce" => "Woocommerce",
 		"StudioPress" => "Studiopress",
+		"SearchWP" => "Search WP",
 		"PayPal" => "Paypal",
 		"NextGEN" => "Nextgen",
-		"Material WP" => "Material",
 		"MarketPress" => "Marketpress",
 		"MailPoet" => "Mailpoet",
 		"MailChimp" => "Mailchimp",
@@ -59,7 +60,8 @@ function katharos_replacement_strings() {
 		"cPanel" => "Cpanel",
 		"BuddyPress" => "Buddypress",
 		"bbPress" => "Bbpress",
-		"AdWords" => "Adwords"
+		"BackUpWordPress" => "Backup Wordpress",
+		"AdWords" => "Adwords",
 	);
 	return $strings;
 }
@@ -102,15 +104,15 @@ function katharos_buffer_callback($html) {
 					$html = str_replace($code, '[[' . $hash . ']]', $html);
 				}
 			}
-			$html = preg_replace(array('#\{[\s]+#', '#[\s]+\}#', '#[\s]+<#', '#>[\s]+#', '#[\s]+#', '#[\x09]#U', '#[\x0D]#U', '#[\x0A]#U', '#<!--[\s]+(.+)[\s]+-->#Us'), array('{', '}', ' <', '> ', ' ', '<!--TB-->', '<!--CR-->', '<!--LF-->', null), $html);
+			$html = preg_replace(array('#\{[\s]+#', '#[\s]+\}#', '#[\s]+<#', '#>[\s]+#', '#[\s]+#', '#[\x09]#U', '#[\x0D]#U', '#[\x0A]#U', '#<!--[\s]+(.+)[\s]+-->#Us', '#>[\s]<#'), array('{', '}', ' <', '> ', ' ', '<!--TB-->', '<!--CR-->', '<!--LF-->', null, '><'), $html);
 			$html = preg_replace('#<!--(TB|CR|LF)-->#U', null, $html);
 			if (count($temp) > 0) {
 				foreach ($temp as $hash => $code) {
 					$html = str_replace('[[' . $hash . ']]', $code, $html);
 				}
 			}
+			$html = katharos_replace_config_strings($html);
 		}
-		$html = katharos_replace_config_strings($html);
 	}
 	if (is_admin() == true) {
 		$html = katharos_woocommerce_headers($html);
@@ -120,11 +122,11 @@ function katharos_buffer_callback($html) {
 		$temp = array();
 		$i = 0;
 		foreach ($strings as $key => $value) {
-			$temp['from'][$i] = sprintf('#\b%s\b#', $key);
+			$temp['from'][$i] = sprintf('#\b(%s)\b#', $key);
 			$temp['to'][$i] = $value;
 			$i++;
 		}
-		$html = preg_replace($temp['from'], $temp['to'], $html);
+		$html = preg_replace($temp['from'], $temp['to'], $html, -1, $count);
 		$html = str_replace(array(':</label>', ':</th>'), array('</label>', '</th>'), $html);
 	}
 	return trim($html);
@@ -161,8 +163,8 @@ function katharos_replace_config_strings($html) {
 function katharos_woocommerce_headers($html) {
 	if (strpos($html, '<div class="wrap woocommerce">') > 0) {
 		$title = ucwords(get_admin_page_title());
-		if (substr(strtoupper($title), 0, 11) <> 'WOOCOMMERCE') {
-			$title = sprintf('%s %s', __('Woocommerce'), $title);
+		if (substr(strtolower($title), 0, 11) <> 'woocommerce') {
+			$title = sprintf('Woocommerce %s', $title);
 		}
 		if (preg_match('#<div class="wrap woocommerce">(.*)<h1>#Uis', $html, $matches) == 0) {
 			$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
