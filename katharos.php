@@ -5,7 +5,7 @@ Plugin Name: Katharos
 Description: Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 Author: Ivan Lutrov
 Author URI: http://lutrov.com/
-Version: 4.3
+Version: 4.4
 Notes: This plugin provides an API to customise the default constant values. See the "readme.md" file for more.
 */
 
@@ -43,6 +43,7 @@ function katharos_replacement_strings() {
 		"MailPoet" => "Mailpoet",
 		"MailChimp" => "Mailchimp",
 		"LearnPress" => "Learnpress",
+		"LearnDash" => "Learndash",
 		"LayerSlider" => "Layerslider",
 		"Howdy" => "G'day",
 		"GeneratePress" => "Generatepress",
@@ -115,7 +116,7 @@ function katharos_buffer_callback($html) {
 		}
 	}
 	if (is_admin() == true) {
-		$html = katharos_woocommerce_headers($html);
+		$html = katharos_hack_woocommerce_headers($html);
 	}
 	$strings = apply_filters('katharos_replacement_strings_filter', katharos_replacement_strings());
 	if (count($strings) > 0) {
@@ -160,18 +161,23 @@ function katharos_replace_config_strings($html) {
 //
 // Woocommerce hack to show correct page titles for reports, settings, status and addons pages.
 //
-function katharos_woocommerce_headers($html) {
-	if (strpos($html, '<div class="wrap woocommerce">') > 0) {
-		$title = ucwords(get_admin_page_title());
-		if (substr(strtolower($title), 0, 11) <> 'woocommerce') {
-			$title = sprintf('Woocommerce %s', $title);
-		}
-		if (preg_match('#<div class="wrap woocommerce">(.*)<h1>#Uis', $html, $matches) == 0) {
-			$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
-		}
-		if (isset($_GET['page']) == true) {
-			if ($_GET['page'] == 'wc-reports') {
-				$html = str_replace('<title>Reports', '<title>Woocommerce Reports ', $html);
+function katharos_hack_woocommerce_headers($html) {
+	if (strpos($html, '<div class="wrap woocommerce') > 0) {
+		$page = isset($_GET['page']) ? $_GET['page'] : null;
+		if ($page == 'wc-reports' || $page == 'wc-settings' || $page == 'wc-status' || $page == 'wc-addons') {
+			$title = ucwords(get_admin_page_title());
+			if (substr(strtolower($title), 0, 11) <> 'woocommerce') {
+				$title = sprintf('WooCommerce %s', $title);
+			}
+			switch ($page) {
+				case 'wc-reports':
+				case 'wc-settings':
+				case 'wc-status':
+					$html = str_replace('<div class="wrap woocommerce">', sprintf('<div class="wrap woocommerce"><h1>%s</h1>', $title), $html);
+					break;
+				case 'wc-addons':
+					$html = str_replace('<div class="wrap woocommerce wc_addons_wrap">', sprintf('<div class="wrap woocommerce wc_addons_wrap"><h1>%s</h1>', $title), $html);
+					break;
 			}
 		}
 	}
