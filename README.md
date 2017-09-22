@@ -30,8 +30,8 @@ This plugin provides an API to to customise the default values. See these exampl
 	add_filter('katharos_remove_server_name_from_urls_filter', '__return_false');
 
 	// ---- Change the Katharos plugin replacement strings.
-	add_filter('katharos_replacement_strings_filter', 'custom_katharos_replacement_strings_filter');
-	function katharos_replacement_strings_filter($array) {
+	add_filter('katharos_replacement_strings_array_filter', 'lutrov_katharos_replacement_strings_array_filter');
+	function lutrov_katharos_replacement_strings_array_filter($array) {
 		return array(
 			'WooCommerce' => 'Woocommerce',
 			'WordPress' => 'Wordpress',
@@ -42,11 +42,11 @@ This plugin provides an API to to customise the default values. See these exampl
 
 For the two string replacement filters above, remember to escape "\", "^", ".", "$", "|", "(", ")", "[", "]", "*", "+", "?", "{", "}" and "," if you're matching any of those characters.
 
-Or if you're using a custom site plugin (you should be), do it via the `plugins_loaded` hook instead:
+Or if you're using a custom site plugin (as you should be), do it via the `plugins_loaded` hook instead:
 
 	// ---- Change the Katharos plugin defaults.
-	add_action('plugins_loaded', 'custom_katharos_filters');
-	function custom_katharos_filters() {
+	add_action('plugins_loaded', 'lutrov_katharos_filters');
+	function lutrov_katharos_filters() {
 		// Change the compress output buffering value to false.
 		add_filter('katharos_compress_output_buffer_filter', '__return_false');
 		// Change the obfuscate Wordpress URLs value to false.
@@ -58,8 +58,8 @@ Or if you're using a custom site plugin (you should be), do it via the `plugins_
 		// Change the remove server name value to false.
 		add_filter('katharos_remove_server_name_from_urls_filter', '__return_false');
 		// Change the replacement strings.
-		add_filter('katharos_replacement_strings_filter', 'custom_katharos_replacement_strings_filter');
-		function katharos_replacement_strings_filter($array) {
+		add_filter('katharos_replacement_strings_array_filter', 'lutrov_katharos_replacement_strings_array_filter');
+		function lutrov_katharos_replacement_strings_array_filter($array) {
 			return array(
 				'WooCommerce' => 'Woocommerce',
 				'WordPress' => 'Wordpress',
