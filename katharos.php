@@ -20,21 +20,63 @@ define('KATHAROS_REMOVE_SCHEME_FROM_URLS', true);
 define('KATHAROS_REMOVE_SERVER_NAME_FROM_URLS', true);
 
 //
-// Default branding replacement strings.
+// Default global replacement strings. Why are we doing this?
+// Because we don't like camelcaps in product or brand names and obviously neither do
+// Facebook, Salesforce, Qualcomm, Rackspace, Admeld, Airbnb, Dropbox, Foursquare, Zipcar,
+// Wayfair, Redfin, Evernote, Flipboard, Shopkick, and countless others.
+// http://xconomy.com/national/2011/12/22/how-not-to-name-a-startup-the-curse-of-the-camel-case/
+// http://nytimes.com/2009/11/29/magazine/29FOB-onlanguage-t.html
 //
 function katharos_replacement_strings() {
 	$strings = array(
+		"YouTube" => "Youtube",
+		"WordPress" => "Wordpress",
+		"WordCamp" => "Wordcamp",
+		"WooThemes" => "Woothemes",
+		"WooSwipe" => "Wooswipe",
+		"WooCommerce" => "Woocommerce",
+		"WePay" => "Wepay",
+		"TriStar" => "Tristar",
+		"TripAdvisor" => "Tripadvisor",
+		"ThinkPad" => "Thinkpad",
+		"StumbleUpon" => "Stumbleupon",
+		"StudioPress" => "Studiopress",
+		"SearchWP" => "Search WP",
+		"PowerPoint" => "Powerpoint",
 		"PayPal" => "Paypal",
+		"NextGEN" => "Nextgen",
+		"MySpace" => "Myspace",
+		"MasterCard" => "Mastercard",
+		"MarketPress" => "Marketpress",
+		"MailPoet" => "Mailpoet",
+		"MailChimp" => "Mailchimp",
+		"LinkedIn" => ""Linkedin"",
+		"LifterLMS" => "Lifter",
+		"LearnPress" => "Learnpress",
+		"LearnDash" => "Learndash",
+		"LayerSlider" => "Layerslider",
+		"iTunes" => "Itunes",
+		"iPod" => "Ipod",
+		"iPhone" => "Iphone",
+		"iPad" => "Ipad",
+		"iMac" => "Imac",
+		"Howdy" => "Hello",
+		"GeneratePress" => "Generatepress",
+		"FedEx" => "Fedex",
 		"eWAY" => "Eway",
 		"eNews" => "Enews",
 		"eCommerce" => "Ecommerce",
 		"eChecks" => "Echecks",
 		"eBay" => "Ebay",
-		"E-mail" => "Email",
+		"EasyCart" => "Easycart",
 		"e-mail" => "email",
-		"E-commerce" => "Ecommerce",
+		"E-mail" => "Email",
 		"e-commerce" => "ecommerce",
+		"E-commerce" => "Ecommerce",
+		"CustomPress" => "Custompress",
 		"cPanel" => "Cpanel",
+		"BuddyPress" => "Buddypress",
+		"bbPress" => "Bbpress",
 		"AdWords" => "Adwords",
 	);
 	return $strings;
