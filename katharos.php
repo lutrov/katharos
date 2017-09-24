@@ -50,7 +50,7 @@ function katharos_replacement_strings() {
 		"MarketPress" => "Marketpress",
 		"MailPoet" => "Mailpoet",
 		"MailChimp" => "Mailchimp",
-		"LinkedIn" => ""Linkedin"",
+		"LinkedIn" => "Linkedin",
 		"LifterLMS" => "Lifter",
 		"LearnPress" => "Learnpress",
 		"LearnDash" => "Learndash",
