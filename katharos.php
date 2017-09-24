@@ -41,6 +41,7 @@ function katharos_replacement_strings() {
 		"ThinkPad" => "Thinkpad",
 		"StumbleUpon" => "Stumbleupon",
 		"StudioPress" => "Studiopress",
+		"SiteGround" => "Siteground",
 		"SearchWP" => "Search WP",
 		"PowerPoint" => "Powerpoint",
 		"PayPal" => "Paypal",
