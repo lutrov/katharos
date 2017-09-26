@@ -135,6 +135,7 @@ function katharos_replacement_strings() {
 		"eNews" => "Enews",
 		"eList" => "Elist",
 		"ElegantEstate" => "Elegantestate",
+		"eLearning" => "Elearning",
 		"eGamer" => "Egamer",
 		"eGallery" => "Egallery",
 		"eCommerce" => "Ecommerce",
