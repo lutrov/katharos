@@ -11,22 +11,22 @@ This project is licensed under the [GNU GPL](http://www.gnu.org/licenses/old-lic
 This plugin provides an API to to customise the default values. See these examples:
 
 	// ---- Change the Katharos plugin compress output buffering value to false.
-	add_filter('katharos_compress_output_buffer_filter', '__return_false');
+	add_filter('katharos_compress_output_buffer', '__return_false');
 
 	// ---- Change the Katharos plugin obfuscate Wordpress URLs value to false.
-	add_filter('katharos_obfuscate_wordpress_urls_filter', '__return_false');
+	add_filter('katharos_obfuscate_wordpress_urls', '__return_false');
 
 	// ---- Change the Katharos plugin remove WWW from URLs value to false.
-	add_filter('katharos_remove_dubya_dubya_dubya_from_urls_filter', '__return_false');
+	add_filter('katharos_remove_dubya_dubya_dubya_from_urls', '__return_false');
 
 	// ---- Change the Katharos plugin remove HTTP scheme value to false.
-	add_filter('katharos_remove_scheme_from_urls_filter', '__return_false');
+	add_filter('katharos_remove_scheme_from_urls', '__return_false');
 
 	// ---- Change the Katharos plugin remove server name value to false.
-	add_filter('katharos_remove_server_name_from_urls_filter', '__return_false');
+	add_filter('katharos_remove_server_name_from_urls', '__return_false');
 
 	// ---- Change the Katharos plugin replacement strings.
-	add_filter('katharos_replacement_strings_array_filter', 'lutrov_katharos_replacement_strings_array_filter');
+	add_filter('katharos_replacement_strings_array', 'lutrov_katharos_replacement_strings_array_filter');
 	function lutrov_katharos_replacement_strings_array_filter($array) {
 		return array(
 			'WooCommerce' => 'Woocommerce',
