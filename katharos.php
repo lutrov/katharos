@@ -199,7 +199,7 @@ function katharos_is_plugin_active($plugin) {
 //  Output buffering functions.
 //
 function katharos_buffer_callback($html) {
-	if (apply_filters('katharos_compress_output_buffer_filter', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
+	if (apply_filters('katharos_compress_output_buffer', KATHAROS_COMPRESS_OUTPUT_BUFFER) == true) {
 		$temp = array();
 		// Remove closing slashes for HTML5 documents.
 		if (stripos($html, '<!DOCTYPE html>') !== false) {
@@ -245,7 +245,7 @@ function katharos_buffer_callback($html) {
 	if (function_exists('dermatos_replacement_strings') == true) {
 		$strings = array_merge($strings, dermatos_replacement_strings());
 	}
-	$strings = apply_filters('katharos_replacement_strings_array_filter', $strings);
+	$strings = apply_filters('katharos_replacement_strings_array', $strings);
 	if (count($strings) > 0) {
 		$temp = array();
 		$i = 0;
@@ -264,17 +264,17 @@ function katharos_buffer_callback($html) {
 // Replace strings based on configuration settings.
 //
 function katharos_replace_config_strings($html) {
-	if (apply_filters('katharos_remove_server_name_from_urls_filter', KATHAROS_REMOVE_SERVER_NAME_FROM_URLS) == true) {
+	if (apply_filters('katharos_remove_server_name_from_urls', KATHAROS_REMOVE_SERVER_NAME_FROM_URLS) == true) {
 		$scheme = 'http';
 		if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
 			$scheme = 'https';
 		}
 		$html = str_replace($scheme . '://' . $_SERVER['SERVER_NAME'], null, $html);
 	}
-	if (apply_filters('katharos_remove_scheme_from_urls_filter', KATHAROS_REMOVE_SCHEME_FROM_URLS) == true) {
+	if (apply_filters('katharos_remove_scheme_from_urls', KATHAROS_REMOVE_SCHEME_FROM_URLS) == true) {
 		$html = preg_replace('#https?://#', '//', $html);
 	}
-	if (apply_filters('katharos_remove_dubya_dubya_dubya_from_urls_filter', KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS) == true) {
+	if (apply_filters('katharos_remove_dubya_dubya_dubya_from_urls', KATHAROS_REMOVE_DUBYA_DUBYA_DUBYA_FROM_URLS) == true) {
 		$html = str_replace('//www.', '//', $html);
 	}
 	return trim($html);
