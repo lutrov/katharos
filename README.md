@@ -1,5 +1,7 @@
 # Katharos
 
+__Note: This plugin is probably not compatible with Wordpress 5.__
+
 Reduces the amount of bandwidth your site and your visitor uses by using sophisticated output buffering techniques to clean and compress your site's webpage content before it gets sent to the user's browser. Why this plugin name? Katharos means "pure" in Greek.
 
 ## Copyright and License
